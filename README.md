@@ -24,9 +24,6 @@ A simplified banking REST API built with Ruby on Rails and PostgreSQL.
 git clone git@github.com:sapienfrom2000s/banking-api.git
 cd banking-api
 
-# Create the .env file with the master key
-echo "RAILS_MASTER_KEY=$(cat config/master.key)" > .env
-
 # Start the app (builds, migrates, and seeds automatically)
 docker compose up --build
 ```
