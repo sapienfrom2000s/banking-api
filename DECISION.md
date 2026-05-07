@@ -52,3 +52,26 @@ rails new banking-api --api \
 ## 2026-05-07 — Ruby Version (3.3.4 over 4.x)
 
 Ruby 4.0 was released in December 2025. It was not adopted here due to gem incompatibility — many gems in the ecosystem have not yet updated to support Ruby 4.x.
+
+## 2026-05-07 — Database Schema Design
+
+### Tables
+
+Three tables were introduced: `users`, `accounts`, and `transactions`.
+
+**Why separate `users` and `accounts`?**
+In real banking, a user can hold multiple accounts (checking, savings, etc.).
+
+**Why a `transactions` table?**
+The assignment only requires deposit, but recording every transaction is a fundamental audit trail. It costs one extra row per operation and makes the system significantly more inspectable and debuggable. It was kept in scope.
+
+### Column-level decisions
+
+- `balance` uses `decimal(15, 2)` — `float` is never used for money due to floating-point precision errors.
+- `balance` has a DB-level `default: 0` and `null: false` — a new account should always start at zero, enforced at the database level.
+- `pin_digest` stores a bcrypt hash, never the plain PIN.
+- `email` has a DB-level unique index in addition to the model-level uniqueness validation — the index prevents race conditions where two concurrent inserts could both pass the Rails uniqueness check before either commits.
+
+### Validation strategy
+
+Both DB constraints and model validations are applied. The model validations surface friendly error messages to the API consumer without hitting the database at all — the request is rejected in memory before any SQL is issued. The DB is the last line of defence.
