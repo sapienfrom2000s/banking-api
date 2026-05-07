@@ -75,3 +75,9 @@ The assignment only requires deposit, but recording every transaction is a funda
 ### Validation strategy
 
 Both DB constraints and model validations are applied. The model validations surface friendly error messages to the API consumer without hitting the database at all — the request is rejected in memory before any SQL is issued. The DB is the last line of defence.
+
+## 2026-05-07 — Test Framework (RSpec over Minitest)
+
+RSpec was chosen over the Rails default Minitest for two reasons:
+1. Readability — RSpec's `describe`/`it`/`expect` DSL reads closer to plain English, making tests easier to understand at a glance.
+2. Community support — RSpec has strong ecosystem adoption, extensive documentation, and a large library of complementary gems (e.g. FactoryBot, Shoulda Matchers).
