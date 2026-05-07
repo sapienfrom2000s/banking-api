@@ -13,7 +13,10 @@ class AccountsController < ApplicationController
       return render json: { error: "Amount must be positive" }, status: :unprocessable_content
     end
 
-    @account.increment!(:balance, amount)
+    ActiveRecord::Base.transaction do
+      @account.increment!(:balance, amount)
+      @account.transactions.create!(amount: amount, transaction_type: "deposit")
+    end
 
     render json: {
       message: "Deposit successful",
@@ -31,7 +34,7 @@ class AccountsController < ApplicationController
   end
 
   def authorize_account
-    if @account && @account.user_id != @current_user.id
+    if @account.user_id != @current_user.id
       render json: { error: "Forbidden" }, status: :forbidden and return
     end
   end

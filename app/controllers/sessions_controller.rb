@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
       return render json: { error: "email and pin are required" }, status: :bad_request
     end
 
-    user = User.find_by(email: params[:email])
+    user = User.find_by(email: params[:email].downcase)
 
     if user.nil?
       return render json: { error: "Invalid email" }, status: :unauthorized
