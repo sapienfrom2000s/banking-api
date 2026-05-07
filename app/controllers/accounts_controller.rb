@@ -6,6 +6,21 @@ class AccountsController < ApplicationController
     render json: { balance: @account.balance.to_s }, status: :ok
   end
 
+  def deposit
+    amount = params[:amount].to_d
+
+    if amount <= 0
+      return render json: { error: "Amount must be positive" }, status: :unprocessable_content
+    end
+
+    @account.increment!(:balance, amount)
+
+    render json: {
+      message: "Deposit successful",
+      balance: @account.balance.to_s
+    }, status: :ok
+  end
+
   private
 
   def set_account

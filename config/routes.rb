@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :sessions, only: [:create]
   resources :accounts, only: [] do
     get :balance, on: :member
+    post :deposit, on: :member
   end
 
   # Defines the root path route ("/")
