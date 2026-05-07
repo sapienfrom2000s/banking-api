@@ -118,15 +118,25 @@ The access token expires in 1 hour. In a production system, this would be paired
 
 ## 2026-05-07 — Concurrent Deposit Handling
 
-Deposits use `increment!` which Rails translates to a single atomic SQL statement:
+The deposit operation wraps `increment!` and `transactions.create!` in an `ActiveRecord::Base.transaction` block. This ensures both operations succeed or fail together — if the `Transaction` record fails to save, the balance update is rolled back. No orphaned balance change without an audit log entry.
+
+Under concurrency, `increment!` translates to a single atomic SQL statement:
 
 ```sql
 UPDATE accounts SET balance = balance + ? WHERE id = ?
 ```
 
-Postgres serializes concurrent `UPDATE` statements on the same row using row-level locking automatically. There is no separate read step in the application, so two concurrent deposits cannot overwrite each other.
+Postgres acquires a row-level lock when this `UPDATE` runs. Example with two concurrent deposits of 100 each on an account with balance 1000:
 
-This is preferred over pessimistic locking (`with_lock`) for a single deposit operation — it is simpler, faster, and requires no application-level lock management. `with_lock` would be the right choice for a multi-step operation like a transfer, where two rows need to be locked together to prevent deadlocks.
+1. Request A starts a transaction, runs `UPDATE ... SET balance = balance + 100` — Postgres locks the row, balance becomes 1100, lock held
+2. Request B starts a transaction, runs `UPDATE ... SET balance = balance + 100` — **waits**, row is locked by A
+3. Request A creates `Transaction` record (amount: 100), commits — row lock released
+4. Request B acquires the lock, runs `UPDATE ... SET balance = balance + 100` on the now-updated balance of 1100 — balance becomes 1200
+5. Request B creates `Transaction` record (amount: 100), commits
+
+Final balance: 1200. Two `Transaction` records. Both deposits are correctly applied.
+
+This is preferred over pessimistic locking (`with_lock`) — it is simpler, faster, and requires no application-level lock management. `with_lock` would be the right choice for a multi-step operation like a transfer, where two rows need to be locked together to prevent deadlocks.
 
 ## 2026-05-07 — `if !` over `unless`
 
