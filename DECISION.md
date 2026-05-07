@@ -81,3 +81,35 @@ Both DB constraints and model validations are applied. The model validations sur
 RSpec was chosen over the Rails default Minitest for two reasons:
 1. Readability — RSpec's `describe`/`it`/`expect` DSL reads closer to plain English, making tests easier to understand at a glance.
 2. Community support — RSpec has strong ecosystem adoption, extensive documentation, and a large library of complementary gems (e.g. FactoryBot, Shoulda Matchers).
+
+## 2026-05-07 — Login API Error Messages
+
+The login endpoint returns distinct error messages for an unknown email (`"Invalid email"`) and a wrong PIN (`"Invalid PIN"`). This is intentionally user-friendly.
+
+The tradeoff is that separate messages enable **email enumeration** — an attacker can probe the endpoint to discover which email addresses are registered.
+
+In a production system this is acceptable because it would be paired with:
+- **IP-based rate limiting** — throttles the number of requests from a single IP, making enumeration at scale impractical
+- **Exponential backoff** — each failed attempt increases the delay before the next attempt is accepted
+
+Without these controls, the safer default would be a single generic message (`"Invalid email or PIN"`) for both cases. Since this assignment is not production-grade, user friendliness is prioritised, and the rate limiting gap is acknowledged as a known limitation.
+
+## 2026-05-07 — Login Route Design (`POST /sessions`)
+
+Three options were considered:
+
+- `POST /login`
+- `POST /users/login`
+- `POST /sessions`
+
+`POST /sessions` was chosen because it maps login to a resource (session) rather than a verb, and enables logical grouping — all session-related actions (login, logout, refresh) live in a single `SessionsController`. With `POST /users/login` and `POST /login`, you end up with a controller that is specific to just the login action, which doesn't scale cleanly as session management grows.
+
+## 2026-05-07 — Exposing Integer IDs in API Responses
+
+The login response returns the user's integer `id`. In a production system, exposing sequential integer IDs is a security concern — an attacker can infer the total number of users, enumerate records, and probe other endpoints by iterating IDs. The standard practice is to use UUIDs instead.
+
+Since this is an assignment project, integer IDs were kept for simplicity.
+
+## 2026-05-07 — `if !` over `unless`
+
+`if !condition` is used throughout the codebase instead of `unless condition`. While `unless` is idiomatic Ruby, `if !` reads more naturally — it makes the negation explicit and is immediately familiar to anyone coming from other languages. This is a personal preference.

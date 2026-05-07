@@ -37,4 +37,16 @@ RSpec.describe User, type: :model do
       expect(build(:user, pin_digest: nil)).not_to be_valid
     end
   end
+
+  describe "#authenticate_pin" do
+    let(:user) { create(:user) }
+
+    it "returns true for the correct PIN" do
+      expect(user.authenticate_pin("1234")).to be true
+    end
+
+    it "returns false for an incorrect PIN" do
+      expect(user.authenticate_pin("0000")).to be false
+    end
+  end
 end
