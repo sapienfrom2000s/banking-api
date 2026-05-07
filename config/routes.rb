@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :sessions, only: [:create]
+  resources :accounts, only: [] do
+    get :balance, on: :member
+  end
 
   # Defines the root path route ("/")
   # root "posts#index"
