@@ -1,8 +1,28 @@
 # Decision Log
 
+## 2026-05-07 — Database Choice (PostgreSQL)
+
+A banking system requires ACID guarantees, so a relational database was non-negotiable.
+
+Between MySQL and PostgreSQL, PostgreSQL was chosen because of how each handles bad data. MySQL has historically been lenient by default — it would silently accept wrong types, constraint violations, and truncated values and just store them. PostgreSQL rejects bad data at the database level and throws an error, enforcing the rules you define even when application code has a bug. For a banking system, the database should be the last line of defence, not a pushover.
+
+Banking systems in general run on PostgreSQL or Oracle. Oracle was ruled out because PostgreSQL is open-source and has strong community support.
+
+Notable real-world usage:
+- **Stripe** — PostgreSQL
+- **Square** — PostgreSQL
+- **Robinhood** — PostgreSQL
+- **Revolut** — PostgreSQL
+- **JPMorgan Chase** — Oracle
+- **Bank of America** — Oracle
+- **Wells Fargo** — Oracle
+
 ## 2026-05-07 — Framework Choice (Ruby on Rails)
 
-Rails was chosen for three reasons: the assignment had a 24-hour submission deadline, familiarity with the Ruby/Rails ecosystem reduces ramp-up time, and Rails' convention-over-configuration philosophy allows faster development compared to more configuration-heavy frameworks.
+Rails was chosen for three reasons:
+1. The assignment had a 24-hour submission deadline
+2. Familiarity with the Ruby/Rails ecosystem
+3. Rails convention-over-configuration philosophy allows faster development compared to more configuration-heavy frameworks.
 
 ## 2026-05-07 — Project Scaffolding
 
