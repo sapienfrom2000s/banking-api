@@ -21,7 +21,7 @@ A simplified banking REST API built with Ruby on Rails and PostgreSQL.
 
 ```bash
 # Clone the repo
-git clone <repo-url>
+git clone git@github.com:sapienfrom2000s/banking-api.git
 cd banking-api
 
 # Start the app (builds, migrates, and seeds automatically)
