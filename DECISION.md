@@ -1,5 +1,9 @@
 # Decision Log
 
+## 2026-05-07 — Framework Choice (Ruby on Rails)
+
+Rails was chosen for three reasons: the assignment had a 24-hour submission deadline, familiarity with the Ruby/Rails ecosystem reduces ramp-up time, and Rails' convention-over-configuration philosophy allows faster development compared to more configuration-heavy frameworks.
+
 ## 2026-05-07 — Project Scaffolding
 
 **Command used:**
