@@ -1,3 +1,5 @@
+# Idempotent Seed
+
 alice = User.find_or_create_by!(email: "alice@example.com") { |u| u.pin_digest = BCrypt::Password.create("1234") }
 Account.find_or_create_by!(user: alice) { |a| a.balance = 1000.00 }
 
