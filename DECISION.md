@@ -24,3 +24,7 @@ rails new banking-api --api \
 - `--skip-action-cable` — No WebSocket/real-time features planned at this stage.
 - `--skip-test` — Default Minitest skipped; test framework to be decided separately (likely RSpec).
 - `--skip-active-job` — No background job processing in the initial scaffold; a queue adapter will be added when async jobs are introduced.
+
+## 2026-05-07 — Ruby Version (3.3.4 over 4.x)
+
+Ruby 4.0 was released in December 2025. It was not adopted here due to gem incompatibility — many gems in the ecosystem have not yet updated to support Ruby 4.x.
