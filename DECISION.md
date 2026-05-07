@@ -110,6 +110,12 @@ The login response returns the user's integer `id`. In a production system, expo
 
 Since this is an assignment project, integer IDs were kept for simplicity.
 
+## 2026-05-07 — JWT Authentication
+
+JWT was chosen for authentication because it is stateless — the server does not need to store session data. The token is signed with the app's `secret_key_base` using HS256.
+
+The access token expires in 1 hour. In a production system, this would be paired with a refresh token — a long-lived token (e.g. 30 days) used solely to obtain a new access token when the short-lived one expires. This keeps the system user-friendly (users are not forced to re-login frequently) while limiting the exposure window if an access token is compromised.
+
 ## 2026-05-07 — `if !` over `unless`
 
 `if !condition` is used throughout the codebase instead of `unless condition`. While `unless` is idiomatic Ruby, `if !` reads more naturally — it makes the negation explicit and is immediately familiar to anyone coming from other languages. This is a personal preference.

@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_one :account, dependent: :destroy
+  before_save { self.email = email.downcase }
+
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :pin_digest, presence: true
 
