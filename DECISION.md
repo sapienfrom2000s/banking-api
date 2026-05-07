@@ -138,6 +138,12 @@ Final balance: 1200. Two `Transaction` records. Both deposits are correctly appl
 
 This is preferred over pessimistic locking (`with_lock`) — it is simpler, faster, and requires no application-level lock management. `with_lock` would be the right choice for a multi-step operation like a transfer, where two rows need to be locked together to prevent deadlocks.
 
+## 2026-05-07 — Committing `config/master.key`
+
+`config/master.key` is committed to the repository. This is intentional for this assignment — it allows the reviewer to clone and run the app without any additional setup steps.
+
+In a production system, `master.key` must never be committed. It should be provided via an environment variable (`RAILS_MASTER_KEY`) through a secrets manager or CI/CD pipeline.
+
 ## 2026-05-07 — `if !` over `unless`
 
 `if !condition` is used throughout the codebase instead of `unless condition`. While `unless` is idiomatic Ruby, `if !` reads more naturally — it makes the negation explicit and is immediately familiar to anyone coming from other languages. This is a personal preference.
